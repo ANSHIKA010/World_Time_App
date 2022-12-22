@@ -16,8 +16,15 @@ class WorldTime {
     Map data = jsonDecode(response.body);
     String datetime = data['datetime'];
     String offset = data['utc_offset'].substring(1,3);
+    String offsetMin = data['utc_offset'].substring(4, 6);
     DateTime now  = DateTime.parse(datetime);
-    now = now.add(Duration(hours: int.parse(offset)));
+    if(data['utc_offset'].substring(0,1) == '+'){
+      now = now.add(Duration(hours: int.parse(offset), minutes: int.parse(offsetMin)));
+    }
+    else{
+      now = now.subtract(Duration(hours: int.parse(offset), minutes: int.parse(offsetMin)));
+    }
+
     isDaytime = now.hour>6 && now.hour<20 ? true : false;
     time = DateFormat.jm().format(now);
   }
